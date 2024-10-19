@@ -1,9 +1,16 @@
+let buffer = '0';
+
 function handleSymbol(value) {
   console.log('symbol');
 }
 
 function handleNumber(value) {
-  console.log('number');
+  if (buffer === '0') {
+    buffer = value
+  } else {
+    buffer += value
+  }
+  console.log(buffer);
 }
 
 function buttonClick(value) {
