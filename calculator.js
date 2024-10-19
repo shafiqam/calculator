@@ -1,4 +1,9 @@
 let buffer = '0';
+const display = document.querySelector('.display');
+
+function reRender(value) {
+  display.innerText = value;
+}
 
 function handleSymbol(value) {
   console.log('symbol');
@@ -10,7 +15,7 @@ function handleNumber(value) {
   } else {
     buffer += value
   }
-  console.log(buffer);
+  reRender(buffer);
 }
 
 function buttonClick(value) {
