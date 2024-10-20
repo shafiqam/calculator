@@ -5,11 +5,43 @@ function reRender(value) {
   display.innerText = value;
 }
 
+function handleMath(value) {
+  // TODO
+}
+
 function handleSymbol(value) {
-  console.log('symbol');
+  switch (value) {
+    case 'C':
+      buffer = '0';
+      break;
+    case '←':
+      buffer = buffer.slice(0, -1);
+      break;
+    case '±':
+      buffer = -1 * parseInt(buffer);
+      break;
+    case '.':
+      if (!(buffer.includes('.'))) {
+        buffer = buffer + '.';
+      }
+      break;
+    case '=':
+      // TODO
+      break;
+    case '÷':
+    case 'x':
+    case '-':
+    case '+':
+      handleMath(buffer);
+      break;
+    default:
+      buffer = '0';
+  }
+  reRender(buffer);
 }
 
 function handleNumber(value) {
+  console.log(typeof parseInt(value));
   if (buffer === '0') {
     buffer = value
   } else {
