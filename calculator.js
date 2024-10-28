@@ -90,7 +90,7 @@ function handleSymbol(symbol) {
       // expression done, no need save runningTotal and prevOperator
       buffer = '' + runningTotal; // save it as a string
       runningTotal = 0;
-      prevOperator = null;
+      prevOperator = '=';
       floatOperation = false;
       break;
     case '+':
@@ -105,6 +105,12 @@ function handleSymbol(symbol) {
 }
 
 function handleNumber(value) {
+  console.log(prevOperator)
+  // flush out the buffer of prev operation
+  if (prevOperator === '=') {
+    buffer = '0';
+  }
+
   if (buffer === '0') {
     buffer = value
   } else {
