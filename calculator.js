@@ -1,18 +1,33 @@
 let buffer = '0';
 let runningTotal = 0;
 let prevOperator = null;
+let floatOperation = false;
 const display = document.querySelector('.display');
 
 function reRender() {
-  //round to 15 char length
+  // consequent actions will be on floats
+  if (buffer.includes('.')) {
+    floatOperation = true;
+  }
+
+  // round to 15 char length
   if (buffer.length > 15) {
     buffer = buffer.slice(0, 15);
   }
+
   display.innerText = buffer;
 }
 
+function parse(buffer) {
+  if (floatOperation) {
+    return parseFloat(buffer);
+  } else {
+    return parseInt(buffer);
+  }
+}
+
 function handleMath(symbol) {
-  const operand = parseInt(buffer);
+  const operand = parse(buffer);
   if (prevOperator === null) {
     runningTotal = operand;
   } else {
@@ -55,7 +70,8 @@ function handleSymbol(symbol) {
       break;
     case '±':
       if (!(buffer === '0')) {
-        buffer = -1 * parseInt(buffer);
+        buffer = -1 * parse(buffer);
+        buffer = '' + buffer; // convert back to a string
       }
       break;
     case '.':
@@ -64,17 +80,18 @@ function handleSymbol(symbol) {
       }
       break;
     case '=':
+      // need two numbers to do math
       if (prevOperator === null) {
-        // need two numbers to do math
         return;
       }
 
-      flushOperation(parseInt(buffer));
+      flushOperation(parse(buffer));
 
       // expression done, no need save runningTotal and prevOperator
       buffer = '' + runningTotal; // save it as a string
       runningTotal = 0;
       prevOperator = null;
+      floatOperation = false;
       break;
     case '+':
     case '-':
@@ -87,7 +104,6 @@ function handleSymbol(symbol) {
   }
 }
 
-// TODO: handle floating point numbers
 function handleNumber(value) {
   if (buffer === '0') {
     buffer = value
@@ -97,6 +113,8 @@ function handleNumber(value) {
 }
 
 function buttonClick(value) {
+  // checking if its a number or not
+  // no need to use custom parse, for a int or float
   if (isNaN(parseInt(value))) {
     handleSymbol(value);
   } else {
