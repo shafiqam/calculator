@@ -105,7 +105,6 @@ function handleSymbol(symbol) {
 }
 
 function handleNumber(value) {
-  console.log(prevOperator)
   // flush out the buffer of prev operation
   if (prevOperator === '=') {
     buffer = '0';
