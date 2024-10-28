@@ -37,7 +37,6 @@ calculator/
 3. **Operator Logic**:
 - Store the first operand, operator, and current input.
 - When the "=" button is pressed, perform the calculation and update the display.
-- Handle operator precedence (e.g., multiplication and division before addition and subtraction).
 4. **Clear Button**: Reset the calculator to its initial state.
 
 ## Additional Considerations
