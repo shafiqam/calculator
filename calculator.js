@@ -1,24 +1,62 @@
 let buffer = '0';
+let runningTotal = 0;
+let prevOperator = null;
 const display = document.querySelector('.display');
 
-function reRender(value) {
-  display.innerText = value;
+function reRender() {
+  //round to 15 char length
+  if (buffer.length > 15) {
+    buffer = buffer.slice(0, 15);
+  }
+  display.innerText = buffer;
 }
 
-function handleMath(value) {
-  // TODO
+function handleMath(symbol) {
+  const operand = parseInt(buffer);
+  if (prevOperator === null) {
+    runningTotal = operand;
+  } else {
+    flushOperation(operand);
+  }
+
+  // we have an operator in memory
+  // for the next operation
+  prevOperator = symbol;
+
+  // assign 0 to buffer for next operand
+  buffer = '0';
 }
 
-function handleSymbol(value) {
-  switch (value) {
+function flushOperation(operand) {
+  if (prevOperator === '+') {
+    runningTotal += operand;
+  } else if (prevOperator === '-') {
+    runningTotal -= operand;
+  } else if (prevOperator === 'x') {
+    runningTotal *= operand;
+  } else if (prevOperator === '÷') { // being explicit helps readability
+    runningTotal /= operand;
+  }
+}
+
+function handleSymbol(symbol) {
+  switch (symbol) {
     case 'C':
       buffer = '0';
+      runningTotal = 0;
+      prevOperator = null;
       break;
     case '←':
-      buffer = buffer.slice(0, -1);
+      if (buffer.length === 1) {
+        buffer = '0';
+      } else {
+        buffer = buffer.slice(0, -1);
+      }
       break;
     case '±':
-      buffer = -1 * parseInt(buffer);
+      if (!(buffer === '0')) {
+        buffer = -1 * parseInt(buffer);
+      }
       break;
     case '.':
       if (!(buffer.includes('.'))) {
@@ -26,28 +64,36 @@ function handleSymbol(value) {
       }
       break;
     case '=':
-      // TODO
+      if (prevOperator === null) {
+        // need two numbers to do math
+        return;
+      }
+
+      flushOperation(parseInt(buffer));
+
+      // expression done, no need save runningTotal and prevOperator
+      buffer = '' + runningTotal; // save it as a string
+      runningTotal = 0;
+      prevOperator = null;
       break;
-    case '÷':
-    case 'x':
-    case '-':
     case '+':
-      handleMath(buffer);
+    case '-':
+    case 'x':
+    case '÷':
+      handleMath(symbol);
       break;
     default:
       buffer = '0';
   }
-  reRender(buffer);
 }
 
+// TODO: handle floating point numbers
 function handleNumber(value) {
-  console.log(typeof parseInt(value));
   if (buffer === '0') {
     buffer = value
   } else {
     buffer += value
   }
-  reRender(buffer);
 }
 
 function buttonClick(value) {
@@ -56,6 +102,7 @@ function buttonClick(value) {
   } else {
     handleNumber(value);
   }
+  reRender();
 }
 
 function init() {
